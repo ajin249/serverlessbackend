@@ -1,9 +1,10 @@
 import { gql } from "apollo-server-lambda";
-const user = gql`
+
+export const user = gql`
   type Mutation {
     createUser(userInput: userInput!): userInfo!
     updateUser(id: ID!, userInput: userInput!): userInfo!
-    doLogin(email: String!, password: String!): userInfo!
+    doLogin(email: String!, password: String!): userInfo
   }
 
   type userInfo {
@@ -27,4 +28,3 @@ const user = gql`
     employeeId: Int
   }
 `;
-export default user;

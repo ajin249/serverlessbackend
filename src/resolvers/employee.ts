@@ -4,10 +4,12 @@ import * as Joi from "joi";
 
 const Employee = require("../models/sql/employee")(db.sequelize, DataTypes);
 const Department = require("../models/sql/department")(db.sequelize, DataTypes);
+
 Employee.belongsTo(Department, {
   foreignKey: "departmentId",
   as: "department",
 });
+
 const schema = Joi.object({
   email: Joi.string().email().required().messages({
     "string.empty": `Email is a required field`,
@@ -19,6 +21,7 @@ const schema = Joi.object({
     "string.empty": `Department is a required field`,
   }),
 });
+
 const employeeQueries = {
   employees: async (parent: any, {}: any, context: any) => {
     try {
@@ -29,6 +32,7 @@ const employeeQueries = {
       return error;
     }
   },
+  
   employeesWithPagination: async (
     parent: any,
     { limit, offset }: any,
@@ -77,6 +81,7 @@ const employeeMutations = {
       return error;
     }
   },
+
   updateEmployee: async (
     parent: any,
     { employeeId, employeeInput }: any,
@@ -93,7 +98,8 @@ const employeeMutations = {
           response.message = err.message;
         });
         response.status = false;
-      } else {
+      } 
+      else {
         const data = await Employee.update(employeeInput, {
           where: { id: employeeId },
         });
@@ -113,6 +119,7 @@ const employeeMutations = {
       return error;
     }
   },
+
   deleteEmployee: async (parent: any, { employeeId }: any, context: any) => {
     try {
       const data = await Employee.destroy({ where: { id: employeeId } });
@@ -125,5 +132,6 @@ const employeeMutations = {
       throw error;
     }
   },
+
 };
 export { employeeQueries, employeeMutations };

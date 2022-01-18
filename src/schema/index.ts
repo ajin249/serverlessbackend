@@ -2,10 +2,11 @@ import { gql } from "apollo-server-lambda";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { department } from "./department";
 import resolvers from "../resolvers";
-import employee from "./employee";
-import user from "./user";
+import { employee } from "./employee";
+import { user } from "./user";
 
 const types = [department, employee, user];
+
 const Query = gql`
   type Query {
     _empty: String

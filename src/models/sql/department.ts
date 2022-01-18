@@ -17,4 +17,5 @@ function model(sequelize: any) {
   const options = {};
   return sequelize.define("department", attributes, options);
 }
+
 module.exports = model;

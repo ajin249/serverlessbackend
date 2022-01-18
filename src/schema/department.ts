@@ -1,4 +1,5 @@
 import { gql } from "apollo-server-lambda";
+
 export const department = gql`
   type Query {
     departments: [department]

@@ -3,9 +3,12 @@ import { DataTypes } from "sequelize";
 import * as Joi from "joi";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 const User = require("../models/sql/user")(db.sequelize, DataTypes);
 const Employee = require("../models/sql/employee")(db.sequelize, DataTypes);
+
 const userQueries = {};
+
 const userMutations = {
   createUser: async (parent: any, { userInput }: any) => {
     const schema = Joi.object({
@@ -18,12 +21,14 @@ const userMutations = {
       email: Joi.string().email().required().messages({
         "string.empty": `Email is a required field`,
       }),
-      password: Joi.string().trim().min(6).required().messages({
+      password: Joi.string().trim().required().messages({
         "string.empty": `Password is a required field`,
       }),
     });
+
     const { error, value } = schema.validate(userInput);
     const response = { message: "", status: true, employee: {} };
+
     if (error) {
       let errors = error.details;
       errors.map((err) => {
@@ -37,8 +42,9 @@ const userMutations = {
         where: { email: userInput.email },
       });
       if (existinguser) {
-        throw new Error("User already exist...");
-      } else {
+        throw new Error("User already exist");
+      } 
+      else {
         const existingEmployee = await Employee.findOne({
           where: { email: userInput.email },
         });
@@ -79,7 +85,7 @@ const userMutations = {
         where: { id: userId },
       });
       if (!user) {
-        throw new Error("User does not exist");
+        throw new Error("Invalid User");
       }
       const updatedUser = await User.update(userInput, {
         where: { id: userId },
@@ -96,20 +102,22 @@ const userMutations = {
         email: Joi.string().email().required().messages({
           "string.empty": `Email is a required field`,
         }),
-        password: Joi.string().trim().min(6).required().messages({
+        password: Joi.string().trim().required().messages({
           "string.empty": `Password is a required field`,
         }),
       });
       const { error } = schema.validate({ email: email, password: password });
       if (error) {
-      } else {
+        console.log(error);
+      } 
+      else {
         const user = await User.findOne({ where: { email } });
         if (!user) {
-          throw new Error("User does not exist");
+          throw new Error("Invalid Username");
         }
         const checkPassword = await bcrypt.compare(password, user.password);
         if (!checkPassword) {
-          throw new Error("Password is incorrect!");
+          throw new Error("Incorrect Password");
         }
         user.token = jwt.sign(
           { userId: user.id },
@@ -118,11 +126,14 @@ const userMutations = {
             expiresIn: "1h",
           }
         );
-        user.message = "Successfully logged in...";
+        user.message = "Successfully logged in";
         return user;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   },
+
 };
 
 export { userQueries, userMutations };

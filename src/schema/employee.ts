@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-lambda";
 
-const employee = gql`
+export const employee = gql`
   type Query {
     employees: [employee]
     employeesWithPagination(limit: Int, offset: Int): employeeData
@@ -45,5 +45,3 @@ const employee = gql`
     totalRows: Int
   }
 `;
-
-export default employee;

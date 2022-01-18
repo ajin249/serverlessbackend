@@ -26,4 +26,5 @@ function model(sequelize: any) {
   const options = {};
   return sequelize.define("user", attributes, options);
 }
+
 module.exports = model;

@@ -1,7 +1,9 @@
 import db from "../models/sql";
 import { DataTypes } from "sequelize";
 import * as Joi from "joi";
+
 const Department = require("../models/sql/department")(db.sequelize, DataTypes);
+
 const schema = Joi.object({
   name: Joi.string().required().messages({
     "string.empty": `Name is a required field`,
@@ -24,6 +26,7 @@ const departmentQueries = {
     }
   },
 };
+
 const departmentMutations = {
   createDepartment: async (
     parent: any,
@@ -41,8 +44,9 @@ const departmentMutations = {
           response.message = err.message;
         });
         response.status = false;
-      } else {
-        response.message = "New department added..";
+      } 
+      else {
+        response.message = "New Department Added";
         response.department = await Department.create(departmentInput);
       }
       return response;
@@ -50,6 +54,7 @@ const departmentMutations = {
       throw error;
     }
   },
+
   updateDepartment: async (
     parent: any,
     { id, departmentInput }: any,
@@ -66,13 +71,15 @@ const departmentMutations = {
           response.message = err.message;
         });
         response.status = true;
-      } else {
+      } 
+      else {
         const data = await Department.update(departmentInput, {
           where: { id: id },
         });
         if (parseInt(data) === 1) {
           response.department = await Department.findOne({ where: { id: id } });
-        } else {
+        } 
+        else {
           response.message = "Department doesnot exists";
           response.status = false;
         }
@@ -82,17 +89,20 @@ const departmentMutations = {
       return error;
     }
   },
+
   deleteDepartment: async (parent: any, { id }: any, context: any) => {
     try {
       const data = await Department.destroy({ where: { id: id } });
       if (parseInt(data) === 1) {
-        return { message: "Department deleted..", status: true };
-      } else {
-        return { message: "Couldn't found the department", status: false };
+        return { message: "Department deleted", status: true };
+      } 
+      else {
+        return { message: "Invalid Department", status: false };
       }
     } catch (error) {
       throw error;
     }
   },
+
 };
 export { departmentQueries, departmentMutations };
