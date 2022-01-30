@@ -32,7 +32,7 @@ const employeeQueries = {
       return error;
     }
   },
-  
+
   employeesWithPagination: async (
     parent: any,
     { limit, offset }: any,
@@ -98,8 +98,7 @@ const employeeMutations = {
           response.message = err.message;
         });
         response.status = false;
-      } 
-      else {
+      } else {
         const data = await Employee.update(employeeInput, {
           where: { id: employeeId },
         });
@@ -132,6 +131,5 @@ const employeeMutations = {
       throw error;
     }
   },
-
 };
 export { employeeQueries, employeeMutations };

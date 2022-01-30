@@ -13,7 +13,7 @@ export const user = gql`
     lastName: String
     email: String!
     role: String
-    status: String!
+    status: Boolean!
     employeeId: Int
     message: String
     token: String

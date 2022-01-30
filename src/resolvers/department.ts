@@ -1,6 +1,7 @@
 import db from "../models/sql";
 import { DataTypes } from "sequelize";
 import * as Joi from "joi";
+import { responsePathAsArray } from "graphql";
 
 const Department = require("../models/sql/department")(db.sequelize, DataTypes);
 
@@ -12,12 +13,15 @@ const schema = Joi.object({
 
 const departmentQueries = {
   departments: async () => {
+    const response = { departments: {} };
     try {
-      return await Department.findAll();
+      response.departments = await Department.findAll();
+      return response;
     } catch (error) {
       return error;
     }
   },
+
   department: async (parent: any, { departmentId }: any, context: any) => {
     try {
       return await Department.findByPk(departmentId);
@@ -44,8 +48,7 @@ const departmentMutations = {
           response.message = err.message;
         });
         response.status = false;
-      } 
-      else {
+      } else {
         response.message = "New Department Added";
         response.department = await Department.create(departmentInput);
       }
@@ -62,7 +65,7 @@ const departmentMutations = {
   ) => {
     try {
       const { error, value } = schema.validate({
-        departmentInput,
+        name: departmentInput.name,
       });
       const response = { message: "", status: false, department: {} };
       if (error) {
@@ -70,16 +73,16 @@ const departmentMutations = {
         errors.map((err) => {
           response.message = err.message;
         });
-        response.status = true;
-      } 
-      else {
+        response.status = false;
+      } else {
+        console.log(departmentInput);
         const data = await Department.update(departmentInput, {
           where: { id: id },
         });
         if (parseInt(data) === 1) {
           response.department = await Department.findOne({ where: { id: id } });
-        } 
-        else {
+          response.status = true;
+        } else {
           response.message = "Department doesnot exists";
           response.status = false;
         }
@@ -95,14 +98,12 @@ const departmentMutations = {
       const data = await Department.destroy({ where: { id: id } });
       if (parseInt(data) === 1) {
         return { message: "Department deleted", status: true };
-      } 
-      else {
+      } else {
         return { message: "Invalid Department", status: false };
       }
     } catch (error) {
       throw error;
     }
   },
-
 };
 export { departmentQueries, departmentMutations };

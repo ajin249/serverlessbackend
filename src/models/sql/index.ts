@@ -29,7 +29,7 @@ sequelize
   .catch(function (err: any) {
     console.log("DB Error: ", err);
   });
-  
+
 sequelize.sync().then(() => {
   console.log("tables migrated");
 });

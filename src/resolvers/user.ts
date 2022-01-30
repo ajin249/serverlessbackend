@@ -1,3 +1,4 @@
+import { department } from "./../schema/department";
 import db from "../models/sql";
 import { DataTypes } from "sequelize";
 import * as Joi from "joi";
@@ -43,8 +44,7 @@ const userMutations = {
       });
       if (existinguser) {
         throw new Error("User already exist");
-      } 
-      else {
+      } else {
         const existingEmployee = await Employee.findOne({
           where: { email: userInput.email },
         });
@@ -109,8 +109,7 @@ const userMutations = {
       const { error } = schema.validate({ email: email, password: password });
       if (error) {
         console.log(error);
-      } 
-      else {
+      } else {
         const user = await User.findOne({ where: { email } });
         if (!user) {
           throw new Error("Invalid Username");
@@ -126,14 +125,14 @@ const userMutations = {
             expiresIn: "1h",
           }
         );
+        user.status = true;
         user.message = "Successfully logged in";
         return user;
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   },
-
 };
 
 export { userQueries, userMutations };

@@ -2,14 +2,21 @@ import { gql } from "apollo-server-lambda";
 
 export const department = gql`
   type Query {
-    departments: [department]
+    departments: deptList
     department(departmentId: Int!): department
   }
 
   type Mutation {
     createDepartment(departmentInput: departmentInput!): departmentResponse!
-    updateDepartment(id: ID!, departmentInput: departmentInput): department!
+    updateDepartment(
+      id: ID!
+      departmentInput: departmentInput
+    ): departmentResponse!
     deleteDepartment(id: ID!): response!
+  }
+
+  type deptList {
+    departments: [department]
   }
 
   type department {
